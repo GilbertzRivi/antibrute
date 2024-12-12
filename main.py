@@ -149,7 +149,7 @@ def process_request(ip):
         result = cursor.fetchone()
 
         if result:  # IP było już banowane
-            duration = result[0]
+            duration = int(result[0])
         else:
             duration = initial_ban_duration
 
@@ -161,7 +161,7 @@ def process_request(ip):
         )
         result = cursor.fetchone()
         if result:
-            ban_number = result[0]
+            ban_number = int(result[0])
         else:
             ban_number = 0
         ban_number += 1
@@ -212,8 +212,8 @@ def monitor_timeout():
         )
         result = cursor.fetchall()
         for row in result:
-            number = row[0] - 1
-            timeout = row[1] + base_timeout
+            number = int(row[0]) - 1
+            timeout = int(row[1]) + base_timeout
             ip = row[2]
             if number <= 0:
                 cursor.execute(
