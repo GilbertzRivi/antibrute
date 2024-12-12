@@ -66,13 +66,21 @@ def ban_ip(ip, duration, ban_number, timeout):
         """
     INSERT OR REPLACE INTO bans (ip, ban_end, ban_duration) VALUES (?, ?, ?)
     """,
-        (ip, ban_end, duration),
+        (
+            ip,
+            ban_end,
+            duration,
+        ),
     )
     cursor.execute(
         """
     INSERT OR REPLACE INTO ban_count (ip, timeout, ban_number) VALUES (?, ?, ?)
     """,
-        (ip, timeout, ban_number),
+        (
+            ip,
+            timeout,
+            ban_number,
+        ),
     )
     conn.commit()
     subprocess.run(["iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"])
@@ -115,7 +123,10 @@ def process_request(ip):
         """
     INSERT INTO requests (ip, timestamp) VALUES (?, ?)
     """,
-        (ip, current_time),
+        (
+            ip,
+            current_time,
+        ),
     )
     conn.commit()
 
