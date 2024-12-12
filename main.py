@@ -54,6 +54,7 @@ conn.commit()
 
 
 def log_message(message):
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
     with open(log_file, "a") as log:
         log.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
 
