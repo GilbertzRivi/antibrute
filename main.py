@@ -3,14 +3,13 @@ import sqlite3
 import time
 import subprocess
 import re
-import sys
 from threading import Thread
 
 with open("config.json") as config_file:
     config = json.load(config_file)
 
 interface = config["interface"]
-server_port = sys.argv[1]
+server_port = config["server_port"]
 request_limit = config["request_limit"]
 time_window = config["time_window"]
 base_timeout = config["base_timeout"]
