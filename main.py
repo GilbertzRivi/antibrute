@@ -214,7 +214,6 @@ def monitor_traffic():
                     match = re.search(r"SRC=([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", line)
                     if match:
                         ip = match.group(1)
-                        log_message(f"processing {ip}")
                         process_request(ip)
         except Exception as e:
             log_message(f"Error in monitor_traffic: {str(e)}")
