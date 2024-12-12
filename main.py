@@ -3,13 +3,14 @@ import sqlite3
 import time
 import subprocess
 import re
+import sys
 from threading import Thread
 
 with open("config.json") as config_file:
     config = json.load(config_file)
 
 interface = config["interface"]
-server_port = config["server_port"]
+server_port = sys.argv[1]
 request_limit = config["request_limit"]
 time_window = config["time_window"]
 base_timeout = config["base_timeout"]
@@ -199,7 +200,6 @@ def delete_old_logs():
 def monitor_traffic():
     log_message("Started monitoring traffic.")
 
-    # Otwórz strumień do pliku dziennika systemowego
     with subprocess.Popen(
         ["tail", "-f", "/var/log/syslog"],
         stdout=subprocess.PIPE,
@@ -209,9 +209,7 @@ def monitor_traffic():
             for line in iter(proc.stdout.readline, b""):
                 line = line.decode("utf-8").strip()
 
-                # Filtruj linie zawierające informacje od iptables
                 if "SRC=" in line and f"DPT={server_port}" in line:
-                    # Wyodrębnij adres IP źródłowy
                     match = re.search(r"SRC=([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", line)
                     if match:
                         ip = match.group(1)
