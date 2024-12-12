@@ -143,7 +143,7 @@ def process_request(ip):
     """,
         (
             ip,
-            current_time,
+            current_time - time_window,
         ),
     )
     request_count = cursor.fetchone()[0]
