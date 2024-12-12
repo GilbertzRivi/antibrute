@@ -181,6 +181,7 @@ def monitor_traffic():
                     if match:
                         ip = match.group(1)
                         process_request(ip)
+                        log_message(f"processing {ip}")
         except Exception as e:
             log_message(f"Error in monitor_traffic: {str(e)}")
         finally:
