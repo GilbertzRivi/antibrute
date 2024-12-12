@@ -55,7 +55,7 @@ conn.commit()
 
 
 def log_message(message):
-    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}")
     with open(log_file, "a") as log:
         log.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
 
@@ -140,7 +140,7 @@ def process_request(ip):
         if result:  # IP było już banowane
             duration = result
         else:
-            new_duration = initial_ban_duration
+            duration = initial_ban_duration
 
         cursor.execute(
             """
