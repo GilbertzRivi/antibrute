@@ -64,7 +64,7 @@ def ban_ip(ip, duration, ban_number, timeout):
     ban_end = int(time.time()) + duration
     cursor.execute(
         """
-    INSERT OR REPLACE INTO bans (ip, ban_end, ban_duration, ban_number) VALUES (?, ?, ?, ?)
+    INSERT OR REPLACE INTO bans (ip, ban_end, ban_duration) VALUES (?, ?, ?)
     """,
         (ip, ban_end, duration),
     )
