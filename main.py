@@ -149,7 +149,7 @@ def process_request(ip):
         result = cursor.fetchone()
 
         if result:  # IP było już banowane
-            duration = result
+            duration = result[0]
         else:
             duration = initial_ban_duration
 
@@ -161,7 +161,7 @@ def process_request(ip):
         )
         result = cursor.fetchone()
         if result:
-            ban_number = result
+            ban_number = result[0]
         else:
             ban_number = 0
         ban_number += 1
@@ -212,9 +212,9 @@ def monitor_timeout():
         )
         result = cursor.fetchall()
         for row in result:
-            number = row["ban_number"] - 1
-            timeout = row["timeout"] + base_timeout
-            ip = row["ip"]
+            number = row[0] - 1
+            timeout = row[1] + base_timeout
+            ip = row[2]
             if number <= 0:
                 cursor.execute(
                     """
@@ -239,9 +239,12 @@ if __name__ == "__main__":
         ban_thread.start()
         timeout_thread = Thread(target=monitor_timeout, daemon=True)
         timeout_thread.start()
+        monitor_thread = Thread(target=monitor_traffic, daemon=True)
+        monitor_thread.start()
 
-        # Monitoruj ruch sieciowy
-        monitor_traffic()
+        for thread in [ban_thread, timeout_thread, monitor_thread]:
+            thread.join()
+
     except KeyboardInterrupt:
         log_message("Script terminated.")
     except Exception as e:
