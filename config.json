@@ -1,0 +1,10 @@
+{
+    "interface": "enp4s0",
+    "server_port": 3389,
+    "request_limit": 10,
+    "time_window": 10,
+    "initial_ban_duration": 60,
+    "base_timeout": 60,
+    "db_path": "ban_system.db",
+    "log_file": "/var/log/ip_bans.log"
+}
