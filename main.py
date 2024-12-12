@@ -175,6 +175,8 @@ def process_request(ip):
             ban_number = 0
         ban_number += 1
         new_duration = duration * pow(2, ban_number)
+        if new_duration > 2147483647:
+            new_duration = 2147483647
 
         timeout = int(time.time()) + base_timeout
 
