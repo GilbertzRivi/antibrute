@@ -2,6 +2,7 @@ import json
 import sqlite3
 import time
 import subprocess
+import re
 from threading import Thread
 
 with open("config.json") as config_file:
@@ -161,28 +162,30 @@ def process_request(ip):
 
 
 def monitor_traffic():
-    # Przechwyć ruch przychodzący na serwer
-    proc = subprocess.Popen(
-        [
-            "iptables",
-            "-I",
-            "INPUT",
-            "-p",
-            "tcp",
-            "--dport",
-            str(server_port),
-            "-j",
-            "LOG",
-        ],
+    log_message("Started monitoring traffic.")
+
+    # Otwórz strumień do pliku dziennika systemowego
+    with subprocess.Popen(
+        ["tail", "-f", "/var/log/syslog"],
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
-    )
-    log_message("Started monitoring traffic.")
-    for line in iter(proc.stdout.readline, b""):
-        line = line.decode("utf-8").strip()
-        if "SRC=" in line:
-            ip = line.split("SRC=")[1].split()[0]
-            process_request(ip)
+    ) as proc:
+        try:
+            for line in iter(proc.stdout.readline, b""):
+                line = line.decode("utf-8").strip()
+
+                # Filtruj linie zawierające informacje od iptables
+                if "SRC=" in line and f"DPT={server_port}" in line:
+                    # Wyodrębnij adres IP źródłowy
+                    match = re.search(r"SRC=([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", line)
+                    if match:
+                        ip = match.group(1)
+                        process_request(ip)
+        except Exception as e:
+            log_message(f"Error in monitor_traffic: {str(e)}")
+        finally:
+            proc.terminate()
+            log_message("Stopped monitoring traffic.")
 
 
 def monitor_timeout():
