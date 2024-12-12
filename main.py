@@ -16,7 +16,12 @@ initial_ban_duration = config["initial_ban_duration"]
 db_path = config["db_path"]
 log_file = config["log_file"]
 
-conn = sqlite3.connect(db_path, check_same_thread=False)
+
+def get_db_connection():
+    return sqlite3.connect(db_path, check_same_thread=False)
+
+
+conn = get_db_connection()
 cursor = conn.cursor()
 
 cursor.execute(
@@ -80,6 +85,8 @@ def unban_ip(ip):
 
 
 def monitor_bans():
+    conn = get_db_connection()
+    cursor = conn.cursor()
     while True:
         current_time = int(time.time())
         cursor.execute("SELECT ip FROM bans WHERE ban_end <= ?", (current_time,))
@@ -178,6 +185,8 @@ def monitor_traffic():
 
 
 def monitor_timeout():
+    conn = get_db_connection()
+    cursor = conn.cursor()
     while True:
         cursor.execute(
             """
