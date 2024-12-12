@@ -212,9 +212,9 @@ def monitor_timeout():
         )
         result = cursor.fetchall()
         for row in result:
-            number = int(row[0]) - 1
+            ip = int(row[0]) - 1
             timeout = int(row[1]) + base_timeout
-            ip = row[2]
+            number = row[2]
             if number <= 0:
                 cursor.execute(
                     """
