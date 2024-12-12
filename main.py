@@ -139,9 +139,12 @@ def process_request(ip):
 
     cursor.execute(
         """
-    SELECT COUNT(*) FROM requests WHERE ip = ?
+    SELECT COUNT(*) FROM requests WHERE ip = ? AND timestamp >= ?
     """,
-        (ip,),
+        (
+            ip,
+            current_time,
+        ),
     )
     request_count = cursor.fetchone()[0]
 
